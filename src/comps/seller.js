@@ -7,48 +7,54 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 
-export default function Sell() {
+export default function Seller() {
 
-    const{sellerID, sellerFirstName, sellerSurname}=useParams()
+    const { sellers_id, sellerFirstName, sellerLastName } = useParams()
 
-    // const urlSellerProperty=`/sellerProp/${sellerID}/${sellerFirstName}/${sellerSurname}`
+    const urlSellerProperty=`/sellerProp/${sellers_id}/${sellerFirstName}/${sellerLastName}`
 
 
     const [sellerList, setSellerList] = useState([])
-    // const [uniqueID, setUniqueID] = useState(0)
+    const [uniqueID, setUniqueID] = useState(0)
     const navigate = useNavigate()
 
 
     useEffect(() => {
-        fetch(`http://localhost:3000/seller`)
+        fetch(`http://localhost:8080/seller/read`)
             .then((response) => {
                 if (!response.ok) {
                     alert("An error has occured, unable to read sellers");
-                    throw response.status;
-                } else return response.json();
+                    throw new Error(response.status);
+                } else 
+                    return response.json();
             })
-            .then(sellers => { setSellerList(sellers) })
+            .then(sellers => {
+                console.log(sellers);
+                setSellerList(sellers)
+            })
             .catch(error => {
                 console.error(error);
             });
     }, []);
-    const showProperties=(seller)=>{
-        const urlSellerProperties=`/sellerProp/${seller.id}/${seller.firstName}/${seller.surname}`
-        navigate(urlSellerProperties)
+
+
+    const showProperties = (seller) => {
+        const urlSellerProperty = `/sellerProp/${seller.sellers_id}/${seller.firstName}/${seller.lastName}`
+        navigate(urlSellerProperty)
     }
-    
+
 
 
 
     function removeR(recno) {
 
-        let tempR = sellerList.filter(recs => recs.id != recno)
+        let tempR = sellerList.filter(recs => recs.seller_id != recno)
         let choice = window.confirm("Are you sure you want to delete this record")
         if (choice) {
             setSellerList(tempR)
 
 
-            fetch(`http://localhost:3000/seller/${recno}`, {
+            fetch(`http://localhost:8080/seller/delete/${recno}` ,{
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +77,7 @@ export default function Sell() {
         <main>
 
 
-            <div class="topSeller">
+            <div className="topSeller">
                 <Link to="/form" id="showButton" className="btn btn-secondary "> Register as a seller </Link>
 
             </div>
@@ -79,38 +85,42 @@ export default function Sell() {
 
 
 
-            <table class="table1">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Forename</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Postcode</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Manage</th>
-                    <th></th>
-
-                </tr>
-                {
-
-                    sellerList.map(rec => <tr>
-                        <td> {rec.id}  </td>
-                        <td> {rec.firstName}  </td>
-                        <td> {rec.surname}  </td>
-                        <td> {rec.address}  </td>
-                        <td> {rec.postcode}  </td>
-                        <td> {rec.phone}  </td>
-                        {/* <td><Link to={urlSellerProperties}>manage properties</Link></td> */}
-                        <td>                        <button className="btn-outline-dark" onClick={()=> showProperties(rec)}>manage properties</button>
-</td>
-                        {/* <td><input type="button" onClick={() => removeR(rec.id)}/><FontAwesomeIcon icon={faTrash} id="trashCan"/></td> */}
-                        <td>    <button className="my-button">
-                            <FontAwesomeIcon icon={faTrash} onClick={() => removeR(rec.id)} />
-
-                        </button></td>
+            <table className="table1">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Forename</th>
+                        <th scope="col">Surname</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Postcode</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Manage</th>
                     </tr>
-                    )
-                }
+                </thead>
+                <tbody>
+                    {
+
+                        sellerList.map(rec => <tr key={rec.sellers_id}>
+                            <td> {rec.sellers_id}  </td>
+                            <td> {rec.firstName}  </td>
+                            <td> {rec.lastName}  </td>
+                            <td> {rec.email}  </td>
+                            <td> {rec.address}  </td>
+                            <td> {rec.postcode}  </td>
+                            <td> {rec.phone}  </td>
+                            {/* { <td><Link to={urlSellerProperty}>manage properties</Link></td> } */}
+                            <td>                        <button className="btn-outline-dark" onClick={() => showProperties(rec)}>manage properties</button>
+                            </td>
+                            {/* <td><input type="button" onClick={() => removeR(rec.id)}/><FontAwesomeIcon icon={faTrash} id="trashCan"/></td> */}
+                            <td>    <button className="my-button">
+                                <FontAwesomeIcon icon={faTrash} onClick={() => removeR(rec.sellers_id)} />
+
+                            </button></td>
+                        </tr>
+                        )
+                    }
+                </tbody>
             </table>
             {/* </div> */}
             <br />

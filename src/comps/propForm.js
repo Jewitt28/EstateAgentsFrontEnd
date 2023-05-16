@@ -2,28 +2,27 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import React, { useRef, useState, useEffect } from "react";
 
 
-//test
 
 export default function PropForm() {
 
-    const typeInputRef = useRef(null);
-    const priceInputRef = useRef(null);
-    const bedInputRef = useRef(null);
-    const bathInputRef = useRef(null);
-    const gardenInputRef = useRef(null);
-    const addressInputRef = useRef(null);
-    const postcodeInputRef = useRef(null);
+    const typeInputRef = useRef();
+    const priceInputRef = useRef();
+    const bedInputRef = useRef();
+    const bathInputRef = useRef();
+    const gardenInputRef = useRef();
+    const addressInputRef = useRef();
+    const postcodeInputRef = useRef();
 
-    const { sellerID, sellerFirstName, sellerSurname } = useParams()
+    const { sellers_id, sellerFirstName, sellerLastName } = useParams()
 
-    const urlSellerProperty = `/sellerProp/${sellerID}/${sellerFirstName}/${sellerSurname}`
+    const urlSellerProperty = `/sellerProp/${sellers_id}/${sellerFirstName}/${sellerLastName}`
 
     const navigate = useNavigate()
 
     const [propertyList, setpropertyList] = useState([])
 
     useEffect(() => {
-        fetch(`http://localhost:3000/property`)
+        fetch(`http://localhost:8080/prop/read`)
             .then((response) => {
                 if (!response.ok) {
                     alert("An error has occured, unable to read propertys");
@@ -35,6 +34,22 @@ export default function PropForm() {
                 console.error(error);
             });
     }, []);
+    function removeR( ){
+        const TempR = {
+            "type": typeInputRef.current.value,
+            "price": priceInputRef.current.value,
+            "bedroom": bedInputRef.current.value,
+            "bathroom": bathInputRef.current.value,
+            "garden": gardenInputRef.current.value,
+            "address": addressInputRef.current.value,
+            "postcode": postcodeInputRef.current.value,
+            "sellers": {
+            "sellers_id": sellers_id
+            },
+            "status": "FOR SALE"
+
+        }
+    }
 
     function addR() {
         const tempR = {
@@ -45,7 +60,9 @@ export default function PropForm() {
             "garden": gardenInputRef.current.value,
             "address": addressInputRef.current.value,
             "postcode": postcodeInputRef.current.value,
-            "sellerId": sellerID,
+            "sellers": {
+                "sellers_id": sellers_id
+                },
             "status": "FOR SALE"
 
         }
@@ -61,7 +78,7 @@ export default function PropForm() {
 
 
 
-                fetch("http://localhost:3000/property", {
+                fetch("http://localhost:8080/prop/add", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(tempR)
@@ -93,7 +110,70 @@ export default function PropForm() {
 
     }
 
+    function removeR(recno) {
 
+        let tempR = propertyList.filter(recs => recs.property_id != recno)
+        let choice = window.confirm("Are you sure you want to delete this record")
+        if (choice) {
+            setpropertyList(tempR)
+
+
+            fetch('http://localhost:8080/prop/delete/${recno}', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(deletedData => {
+                    console.log('JSON entry deleted successfully!', deletedData);
+                    // Perform additional actions as needed after successful deletion
+                })
+                .catch(error => {
+                    console.error('Failed to delete JSON entry:', error);
+                });
+        }
+        else { }
+    };
+    function withdrawR(recno, status) {
+        fetch(`http://localhost:8080/prop/update/${recno}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                status: status
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // find the record with the updated status
+                const updatedPropertyList = propertyList.find(rec => rec.property_id === recno);
+                updatedPropertyList.status = status;
+                setpropertyList([...propertyList]);
+            })
+            .catch(error => console.error('Error updating record', error));
+    }
+
+    function resubmitR(recno, status) {
+        fetch(`http://localhost:8080/prop/update/${recno}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                status: status
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // find the record with the updated status
+                const updatedPropertiesList = propertyList.find(rec => rec.property_id === recno);
+                updatedPropertiesList.status = status;
+                setpropertyList([...propertyList]);
+            })
+            .catch(error => console.error('Error updating record', error));
+    }
 
     function onK(event) {
         if (event.keyCode === 13) {

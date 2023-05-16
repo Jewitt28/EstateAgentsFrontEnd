@@ -6,16 +6,17 @@ import React, { useRef, useState, useEffect } from "react";
 export default function NewForm() {
 
     const forenameInputRef = useRef();
-    const surnameInputRef = useRef();
+    const lastNameInputRef = useRef();
     const addressInputRef = useRef();
+    const emailInputRef = useRef();
     const postcodeInputRef = useRef();
     const phoneInputRef = useRef();
     const navigate = useNavigate()
-    const { sellerID, sellerFirstName, sellerSurname } = useParams()
+    const { sellerID, sellerFirstName, sellerLastName } = useParams()
     const [sellerList, setSellerList] = useState([])
 
     useEffect(() => {
-        fetch(`http://localhost:3000/seller`)
+        fetch(`http://localhost:8080/seller/read`)
             .then((response) => {
                 if (!response.ok) {
                     alert("An error has occured, unable to read sellers");
@@ -37,27 +38,28 @@ export default function NewForm() {
 
         const tempR = {
             "firstName": forenameInputRef.current.value,
-            "surname": surnameInputRef.current.value,
+            "lastName": lastNameInputRef.current.value,
             "address": addressInputRef.current.value,
+            "email": emailInputRef.current.value,
             "postcode": postcodeInputRef.current.value,
             "phone": phoneInputRef.current.value
         }
 
         const compareObjects = (obj1, obj2) =>{
-            const firstNameMatch = obj1.firstName.toLowerCase() === obj2.firstName.toLowerCase();
-            const surNameMatch = obj1.surname.toLowerCase() === obj2.surname.toLowerCase();
-            return firstNameMatch && surNameMatch;
+            const firstNameMatch = obj1.firstName === obj2.firstName;  
+            const lastNameMatch = obj1.lastName === obj2.lastName;
+            return firstNameMatch && lastNameMatch;
 };
 
         if (!sellerList.some(item => compareObjects(item, tempR))) {
 
 
-            if (forenameInputRef.current.value != "" && surnameInputRef.current.value != "") {
+            if (forenameInputRef.current.value != "" && lastNameInputRef.current.value != "") {
 
 
 
 
-                fetch("http://localhost:3000/seller", {
+                fetch("http://localhost:8080/seller/add", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(tempR)
@@ -90,16 +92,16 @@ export default function NewForm() {
 
 
 
-    function onK(event) {
-        if (event.keyCode === 13) {
+     function onK(event) {
+         if (event.keyCode === 13) {
 
-            addR()
-
-
-        }
+             addR()
 
 
-    }
+         }
+
+
+     }
 
 
     return (
@@ -108,7 +110,7 @@ export default function NewForm() {
 
 
 
-            <form id="sellerForm" class="row g-3 needs-validation" novalidate>
+            <form id="sellerForm" class="row g-3 needs-validation" noValidate>
                 <div class="form-row">
                     <div class="mx-auto col-10 col-md-8 col-lg-6">
                         <div for="validationCustom01" class="form-label form-group col form-control is-valid">
@@ -121,13 +123,19 @@ export default function NewForm() {
 
                         <div for="validationCustom02" class="form-label form-group col form-control is-valid">
                             <label for="InputName">Surname</label>
-                            <input type="Name" ref={surnameInputRef} class="form-control" id="InpSurname" aria-describedby="InputName" placeholder="Enter your surname" reqiured></input>
+                            <input type="Name" ref={lastNameInputRef} class="form-control" id="InpSurname" aria-describedby="InputName" placeholder="Enter your surname" reqiured></input>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
                         </div>
 
-
+                        <div for="validationCustom0" class="form-label form-group col form-control is-valid">
+                            <label for="InputEmail">Email</label>
+                            <input type="Name" ref={emailInputRef} class="form-control" id="InpEmail" aria-describedby="InputName" placeholder="Enter your email address" required></input>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
 
                         <div class="form-group form-control is-valid">
                             <label for="InputPhone">Phone Number</label>
@@ -144,19 +152,7 @@ export default function NewForm() {
                         </div>
                         {/* <label for="inputAddress">Address</label> */}
                         {/* <input type="text" class="form-control" id="inputAddress" placeholder="House Number"></input> */}
-                        <div class="form-group  col-md-5 form-control is-valid">
-                            <label for="inputCounty">County</label>
-                            <select id="inputCounty" class="form-control">
-                                <option selected>Choose...</option>
-                                <option>Birmingham</option>
-                                <option>London</option>
-                                <option>Leeds</option>
-                                <option>Manchester</option>
-                                <option>Liverpool</option>
-                                <option>Bristol</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
+                        
                         <div class="form-group col-md-3 form-control is-valid">
                             <label for="inputPcode">Post Code</label>
                             <input type="text" ref={postcodeInputRef} class="form-control" id="inputPcode validationCustom03" required></input>

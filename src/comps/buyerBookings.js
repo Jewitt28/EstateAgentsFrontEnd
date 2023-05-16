@@ -282,7 +282,7 @@ export default function BuyerBookings() {
 
             <main>
 
-                <h1>Bookingss of <b>{buyerFirstName} {buyerSurname}</b> </h1>
+                <h1>Bookings of <b>{buyerFirstName} {buyerSurname}</b> </h1>
 
 
                 <table class="table1">

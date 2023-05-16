@@ -1,16 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faHouse, faFacebook } from '@fortawesome/free-solid-svg-icons'
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse } from '@fortawesome/free-solid-svg-icons';
 
 import Sell from './comps/seller';
-import AboutUs from './comps/Aboutus'
-import Services from './comps/Services'
-import Homepage from './comps/Homepage'
+import AboutUs from './comps/Aboutus';
+import Homepage from './comps/Homepage';
 import PageNotFound from './comps/NotFound';
 import BuyerData from './comps/buyer';
 import PropForm from './comps/propForm';
@@ -31,24 +29,24 @@ root.render(
 
     <BrowserRouter>
 <div id="topOfPage"></div>
-      <nav class="navbar navbar-inverse navbar-expand-sm navbar-dark bg-dark" id="topNavBar">
-        <div class="container-fluid">
-          <div class="navbar-brand"><Link class="nav-link" to="/" ><FontAwesomeIcon icon={faHouse} /></Link></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-            <span class="navbar-toggler-icon"></span>
+      <nav className="navbar navbar-inverse navbar-expand-sm navbar-dark bg-dark" id="topNavBar">
+        <div className="container-fluid">
+          <div className="navbar-brand"><Link className="nav-link" to="/" ><FontAwesomeIcon icon={faHouse} /></Link></div>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav nav">
+          <div className="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul className="navbar-nav nav">
               {/* <li class="nav-item"><Link class="nav-link" to="/" >Home</Link></li> */}
               {/* <li class="nav-item"><Link class="nav-link" to="/aboutus" >About Us</Link></li> */}
-              <li class="nav-item"><Link class="nav-link" to="/buyer" >Buyer</Link></li>
-              <li class="nav-item"><Link class="nav-link" to="/seller" >Seller</Link></li>
-              <li class="nav-item"><Link class="nav-link" to="/property" >Property</Link></li>
+              <li className="nav-item"><Link className="nav-link" to="/buyer" >Buyer</Link></li>
+              <li className="nav-item"><Link className="nav-link" to="/seller" >Seller</Link></li>
+              <li className="nav-item"><Link className="nav-link" to="/prop" >Property</Link></li>
 
             </ul>
 {/*             
               <button  type="button" class="btn btn-dark" id="searchBut">Login</button> */}
-              <ul class="socials">
+              <ul className="socials">
                 {/* <li><FontAwesomeIcon icon={faFacebook} /></li> */}
               </ul>
             
@@ -70,13 +68,13 @@ root.render(
         <Route path="/buyer" element={<BuyerData />} />
         <Route path="*" element={<PageNotFound />} />
         <Route path="/seller" element={<Sell />} />
-        <Route path="/property" element={<Property />} />
+        <Route path="/prop" element={<Property />} />
         <Route path="/form" element={<NewForm />} />
         <Route path="/formBuyer" element={<NewForm2 />} />
-        <Route path="/propForm/:sellerID/:sellerFirstName/:sellerSurname" element={<PropForm />} />
-        <Route path="/sellerProp/:sellerID/:sellerFirstName/:sellerSurname" element={<SellerProp/>}/>
+        <Route path="/propForm/:sellers_id/:sellerFirstName/:sellerLastName" element={<PropForm />} />
+        <Route path="/sellerProp/:sellers_id/:sellerFirstName/:sellerLastName" element={<SellerProp/>}/>
         <Route path="/property/:propertyID/:propertyAddress/:propertyPostcode" element={<Booking/>}/>
-        {/* <Route path="/seller/:propertyID/:propertyAddress/:propertyPostcode" element={<Booking/>}/> */}
+        { <Route path="/seller/:propertyID/:propertyAddress/:propertyPostcode" element={<Booking/>}/> }
         <Route path="/buyerBookings/:buyerID/:buyerFirstName/:buyerSurname" element={<BuyerBookings/>}/>
 
         

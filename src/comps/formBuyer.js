@@ -6,16 +6,18 @@ import React, { useRef, useState, useEffect } from "react";
 export default function NewForm2() {
 
     const forenameInputRef = useRef();
-    const surnameInputRef = useRef();
+    const lastNameInputRef = useRef();
     const addressInputRef = useRef();
     const postcodeInputRef = useRef();
+    const emailInputRef = useRef();
+
     const phoneInputRef = useRef();
     const navigate = useNavigate()
 
     const [buyerList, setbuyerList] = useState([])
 
     useEffect(() => {
-        fetch(`http://localhost:3000/buyer`)
+        fetch(`http://localhost:8080/buyer/read`)
             .then((response) => {
                 if (!response.ok) {
                     alert("An error has occured, unable to read buyers");
@@ -27,31 +29,32 @@ export default function NewForm2() {
                 console.error(error);
             });
     }, []);
-
+ 
 
     function addR() {
 
         const tempR = {
             "firstName": forenameInputRef.current.value,
-            "surname": surnameInputRef.current.value,
+            "lastName": lastNameInputRef.current.value,
             "address": addressInputRef.current.value,
             "postcode": postcodeInputRef.current.value,
+            "email": emailInputRef.current.value,
             "phone": phoneInputRef.current.value
         }
 
 
         const compareObjects = (obj1, obj2) => {
             const firstNameMatch = obj1.firstName.toLowerCase() === obj2.firstName.toLowerCase();
-            const surNameMatch = obj1.surname.toLowerCase() === obj2.surname.toLowerCase();
-            return firstNameMatch && surNameMatch;
+            const lastNameMatch = obj1.lastName.toLowerCase() === obj2.lastName.toLowerCase();
+            return firstNameMatch && lastNameMatch;
         };
 
         if (!buyerList.some(item => compareObjects(item, tempR))) {
-            if (forenameInputRef.current.value != "" && surnameInputRef.current.value != "") {
+            if (forenameInputRef.current.value != "" && lastNameInputRef.current.value != "") {
 
 
 
-                fetch("http://localhost:3000/buyer", {
+                fetch("http://localhost:8080/buyer/add", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(tempR)
@@ -116,7 +119,7 @@ export default function NewForm2() {
 
                         <div for="validationCustom02" class="form-label form-group col form-control is-valid">
                             <label for="InputName">Surname</label>
-                            <input type="Name" ref={surnameInputRef} class="form-control" id="InpSurname" aria-describedby="InputName" placeholder="Enter your surname" reqiured></input>
+                            <input type="Name" ref={lastNameInputRef} class="form-control" id="InpSurname" aria-describedby="InputName" placeholder="Enter your surname" reqiured></input>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -140,17 +143,11 @@ export default function NewForm2() {
                         {/* <label for="inputAddress">Address</label> */}
                         {/* <input type="text" class="form-control" id="inputAddress" placeholder="House Number"></input> */}
                         <div class="form-group  col-md-5 form-control is-valid">
-                            <label for="inputCounty">County</label>
-                            <select id="inputCounty" class="form-control">
-                                <option selected>Choose...</option>
-                                <option>Birmingham</option>
-                                <option>London</option>
-                                <option>Leeds</option>
-                                <option>Manchester</option>
-                                <option>Liverpool</option>
-                                <option>Bristol</option>
-                                <option>Other</option>
-                            </select>
+                            <label for="inputEmail">Email Address</label>
+                            <input type="text" ref={emailInputRef} class="form-control" id="inputEmail validationCustom03" required></input>
+                            <div class="invalid-feedback">
+                                Please provide a valid email address.
+                            </div>
                         </div>
                         <div class="form-group col-md-3 form-control is-valid">
                             <label for="inputPcode">Post Code</label>
